@@ -30,4 +30,4 @@ jobs:
       - name: Build Android project
         working-directory: android-project/NeonScreenScanner
         run: |
-        gradle assembleDebug
+          gradle assembleDebug
