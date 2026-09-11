@@ -27,7 +27,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-            - name: Find and build Android project
+      - name: Find and build Android project
         run: |
           GRADLEW=$(find android-project -name gradlew -type f | head -n 1)
 
