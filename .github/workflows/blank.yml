@@ -27,8 +27,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Android project
-        working-directory: android-project
+            - name: Find and build Android project
         run: |
-          chmod +x gradlew
+          GRADLEW=$(find android-project -name gradlew -type f | head -n 1)
+
+          if [ -z "$GRADLEW" ]; then
+            echo "gradlew not found"
+            find android-project -maxdepth 3 -type f
+            exit 1
+          fi
+
+          echo "Found gradlew at: $GRADLEW"
+          chmod +x "$GRADLEW"
+          cd "$(dirname "$GRADLEW")"
           ./gradlew assembleDebug
