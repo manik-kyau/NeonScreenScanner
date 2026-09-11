@@ -27,15 +27,21 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Fix Kotlin dependencies
+      - name: Fix Kotlin duplicate dependencies
         working-directory: android-project/NeonScreenScanner
         run: |
-          sed -i 's/kotlin-stdlib-jdk8:1.6.21/kotlin-stdlib:1.8.22/g' app/build.gradle
-          sed -i 's/kotlin-stdlib-jdk7:1.6.21/kotlin-stdlib:1.8.22/g' app/build.gradle
-          sed -i 's/kotlin-stdlib-jdk8:1.6.21/kotlin-stdlib:1.8.22/g' build.gradle
-          sed -i 's/kotlin-stdlib-jdk7:1.6.21/kotlin-stdlib:1.8.22/g' build.gradle
+          cat >> app/build.gradle <<'EOF'
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+          EOF
 
       - name: Build Android project
         working-directory: android-project/NeonScreenScanner
         run: |
-          gradle assembleDebug
+          gradle clean assembleDebug
