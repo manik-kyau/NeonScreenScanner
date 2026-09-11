@@ -1,25 +1,34 @@
-name: Neon Signal Bot
+name: Build NeonScreenScanner Android
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/5 * * * *"
+  push:
+    branches:
+      - main
 
 jobs:
-  run-bot:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Extract Android project
+        run: |
+          unzip -o NeonScreenScanner_Native_Android_Project_v3-4.zip -d android-project
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          node-version: 20
+          distribution: temurin
+          java-version: '17'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Run Neon Signal Bot
-        run: node bot.js
+      - name: Build Android project
+        working-directory: android-project
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
