@@ -45,3 +45,10 @@ jobs:
         working-directory: android-project/NeonScreenScanner
         run: |
           gradle clean assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeonScreenScanner-APK
+          path: android-project/NeonScreenScanner/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
