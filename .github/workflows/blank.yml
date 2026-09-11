@@ -30,10 +30,20 @@ jobs:
       - name: Fix Kotlin dependencies
         working-directory: android-project/NeonScreenScanner
         run: |
-          sed -i '/kotlin-stdlib-jdk8:1.6.21/d' app/build.gradle
-          sed -i '/kotlin-stdlib-jdk7:1.6.21/d' app/build.gradle
+          cat >> app/build.gradle <<'EOF'
+
+          configurations.all {
+              resolutionStrategy.eachDependency { details ->
+                  if (details.requested.group == 'org.jetbrains.kotlin') {
+                      details.useVersion '1.8.22'
+                  }
+              }
+          }
+          EOF
 
       - name: Build Android project
         working-directory: android-project/NeonScreenScanner
+        run: |
+          gradle assembleDebug        working-directory: android-project/NeonScreenScanner
         run: |
           gradle assembleDebug
